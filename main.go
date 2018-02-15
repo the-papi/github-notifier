@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/google/go-github/github"
 	"time"
 	"strconv"
 	"github-notifier/helpers"
@@ -18,5 +17,5 @@ func main() {
 		panic(err)
 	}
 
-	github.ListenToNotifications(time.Duration(interval)*time.Second)
+	github.ListenToNotifications(time.Duration(interval) * time.Second)
 }
