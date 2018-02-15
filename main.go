@@ -7,8 +7,6 @@ import (
 	"github-notifier/helpers"
 )
 
-var notificationChannel chan *github.Notification
-
 func main() {
 	config := helpers.NewConfig("./config.json")
 
@@ -20,5 +18,5 @@ func main() {
 		panic(err)
 	}
 
-	github.ListenToNotifications(&notificationChannel, time.Duration(interval)*time.Second)
+	github.ListenToNotifications(time.Duration(interval)*time.Second)
 }
