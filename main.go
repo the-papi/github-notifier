@@ -10,7 +10,7 @@ import (
 var notificationChannel chan *github.Notification
 
 func main() {
-	config := helpers.NewConfig("./github.json")
+	config := helpers.NewConfig("./config.json")
 
 	github := helpers.NewGithubNotifier(config.Get("api_token"))
 

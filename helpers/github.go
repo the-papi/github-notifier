@@ -7,6 +7,7 @@ import (
 	"time"
 	"log"
 	"github.com/gen2brain/beeep"
+	"path/filepath"
 )
 
 type GithubNotifier struct {
@@ -30,7 +31,13 @@ func NewGithubNotifier(apiToken string) (*GithubNotifier) {
 }
 
 func (g *GithubNotifier) ListenNotifications(notificationChannel *chan *github.Notification, wakeUpInterval time.Duration) {
-    for {
+	iconPath, err := filepath.Abs("./icons/octocat.png")
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	for {
 		opts := github.NotificationListOptions{
 			Since: time.Now().Add(-wakeUpInterval),
 		}
@@ -42,7 +49,7 @@ func (g *GithubNotifier) ListenNotifications(notificationChannel *chan *github.N
 		}
 
 		for _, v := range notifications {
-			beeep.Notify("[" + *v.Subject.Type + "] " + *v.Repository.FullName, *v.Subject.Title, "./icons/octocat.png")
+			beeep.Notify("[" + *v.Subject.Type + "] " + *v.Repository.FullName, *v.Subject.Title, iconPath)
 		}
 
 		time.Sleep(wakeUpInterval)
