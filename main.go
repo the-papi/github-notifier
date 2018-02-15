@@ -20,5 +20,5 @@ func main() {
 		panic(err)
 	}
 
-	github.ListenNotifications(&notificationChannel, time.Duration(interval)*time.Second)
+	github.ListenToNotifications(&notificationChannel, time.Duration(interval)*time.Second)
 }

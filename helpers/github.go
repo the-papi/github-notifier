@@ -30,7 +30,7 @@ func NewGithubNotifier(apiToken string) (*GithubNotifier) {
 	}
 }
 
-func (g *GithubNotifier) ListenNotifications(notificationChannel *chan *github.Notification, wakeUpInterval time.Duration) {
+func (g *GithubNotifier) ListenToNotifications(notificationChannel *chan *github.Notification, wakeUpInterval time.Duration) {
 	iconPath, err := filepath.Abs("./icons/octocat.png")
 
 	if err != nil {
