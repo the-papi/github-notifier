@@ -35,7 +35,6 @@ func start() {
 	cmd := exec.Command(os.Args[0], os.Args[2:]...)
 
 	curDir, osErr := os.Getwd()
-
 	if osErr != nil {
 		panic(osErr)
 	}
@@ -45,7 +44,6 @@ func start() {
 
 	// Store PID in file
 	pidFileErr := ioutil.WriteFile(homeDir+"/"+pidFileName, []byte(strconv.Itoa(cmd.Process.Pid)), os.FileMode(0644))
-
 	if pidFileErr != nil {
 		cmd.Process.Kill()
 		panic(pidFileErr)
@@ -62,13 +60,11 @@ func stop() {
 	}
 
 	content, err := ioutil.ReadFile(homeDir + "/" + pidFileName)
-
 	if err != nil {
 		panic(err)
 	}
 
 	pid, err := strconv.Atoi(string(content))
-
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +74,6 @@ func stop() {
 
 	// Remove PID file
 	removeErr := os.Remove(homeDir + "/.github-notifier.pid")
-
 	if removeErr != nil {
 		panic(removeErr)
 	}
