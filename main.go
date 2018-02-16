@@ -10,7 +10,6 @@ import (
 	"os/user"
 )
 
-
 func setHomeDir() {
 	usr, err := user.Current()
 
