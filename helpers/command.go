@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"os"
 	"syscall"
-	"os/user"
 	"os/exec"
 	"log"
 	"io"
@@ -15,16 +14,6 @@ type Command struct {
 	homeDir string
 	srcRoot string
 	goPath  string
-}
-
-func getHomeDir() (string) {
-	usr, err := user.Current()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return usr.HomeDir
 }
 
 func copyFile(src string, dest string) {
@@ -46,9 +35,9 @@ func copyFile(src string, dest string) {
 	}
 }
 
-func NewCommand(goPath string, srcRoot string) (*Command) {
+func NewCommand(homeDir string, goPath string, srcRoot string) (*Command) {
 	command := Command{
-		homeDir: getHomeDir(),
+		homeDir: homeDir,
 		srcRoot: srcRoot,
 		goPath:  goPath,
 	}
