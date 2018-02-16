@@ -1,17 +1,13 @@
-package main
+package helpers
 
 import (
-	"time"
-	"strconv"
-	"github-notifier/helpers"
-	"os"
-	"os/exec"
-	"os/user"
 	"io/ioutil"
+	"strconv"
+	"os"
 	"syscall"
+	"os/user"
+	"os/exec"
 )
-
-const pidFileName = ".github-notifier.pid"
 
 func getHomeDir() (string, error) {
 	usr, err := user.Current()
@@ -19,7 +15,7 @@ func getHomeDir() (string, error) {
 	return usr.HomeDir, err
 }
 
-func start() {
+func Start(pidFileName string) {
 	// Get home dir
 	homeDir, usrErr := getHomeDir()
 	if usrErr != nil {
@@ -52,7 +48,7 @@ func start() {
 	cmd.Process.Release()
 }
 
-func stop() {
+func Stop(pidFileName string) {
 	// Read PID file
 	homeDir, usrErr := getHomeDir()
 	if usrErr != nil {
@@ -77,28 +73,4 @@ func stop() {
 	if removeErr != nil {
 		panic(removeErr)
 	}
-}
-
-func main() {
-	if len(os.Args) > 1 && os.Args[1] == "start" {
-		start()
-	} else if len(os.Args) > 1 && os.Args[1] == "stop" {
-		stop()
-	} else {
-		runApp()
-	}
-}
-
-func runApp() {
-	config := helpers.NewConfig("./config.json")
-
-	github := helpers.NewGithubNotifier(config.Get("api_token"))
-
-	interval, err := strconv.ParseInt(config.Get("interval"), 10, 0)
-
-	if err != nil {
-		panic(err)
-	}
-
-	github.ListenToNotifications(time.Duration(interval) * time.Second)
 }
