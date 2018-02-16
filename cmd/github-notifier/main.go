@@ -5,21 +5,34 @@ import (
 	"strconv"
 	"github-notifier/helpers"
 	"os"
+	"go/build"
 )
 
 const (
+	srcRoot = "/src/github.com/PapiCZ/github-notifier/" // Relative to GOPATH
 	pidFileName = ".github-notifier.pid"
 	configPath  = "./config.json"
 )
 
 func main() {
+	// Get GOPATH
+	goPath := os.Getenv("GOPATH")
+	if goPath == "" {
+		goPath = build.Default.GOPATH
+	}
+
 	if len(os.Args) > 1 {
+		cmd := helpers.NewCommand(goPath, srcRoot)
+
 		switch os.Args[1] {
 		case "start":
-			helpers.Start(pidFileName)
+			cmd.Start(pidFileName)
 			break
 		case "stop":
-			helpers.Stop(pidFileName)
+			cmd.Stop(pidFileName)
+			break
+		case "install":
+			cmd.Install()
 			break
 		}
 	} else {
