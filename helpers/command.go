@@ -24,7 +24,7 @@ func copyFile(src string, dest string) {
 	}
 	defer from.Close()
 
-	to, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0700)
+	to, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,7 +61,7 @@ func (c *Command) Install() {
 	}
 
 	// Copy config file
-	copyFile(c.goPath+c.srcRoot+"/config.json.example", c.homeDir+settings.DataPath+"/"+settings.ConfigFileName)
+	copyFile(c.goPath+c.srcRoot+"/config.json.example", c.homeDir+settings.ConfigPath+"/"+settings.ConfigFileName)
 
 	// Copy octocat
 	copyFile(c.goPath+c.srcRoot+"/icons/octocat.png", c.homeDir+settings.DataPath+"/"+settings.IconFileName)
@@ -85,7 +85,7 @@ func (c *Command) Start(pidFileName string) {
 	cmd.Start()
 
 	// Store PID in file
-	pidFileErr := ioutil.WriteFile(c.homeDir+"/"+pidFileName, []byte(strconv.Itoa(cmd.Process.Pid)), 0644)
+	pidFileErr := ioutil.WriteFile(c.homeDir+"/"+pidFileName, []byte(strconv.Itoa(cmd.Process.Pid)), 0600)
 	if pidFileErr != nil {
 		cmd.Process.Kill()
 		panic(pidFileErr)
