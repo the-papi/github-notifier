@@ -5,26 +5,16 @@ import (
 	"strconv"
 	"os"
 	"syscall"
-	"os/user"
 	"os/exec"
 	"log"
 	"io"
+	"github.com/PapiCZ/github-notifier/settings"
 )
 
 type Command struct {
 	homeDir string
 	srcRoot string
 	goPath  string
-}
-
-func getHomeDir() (string) {
-	usr, err := user.Current()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return usr.HomeDir
 }
 
 func copyFile(src string, dest string) {
@@ -46,9 +36,9 @@ func copyFile(src string, dest string) {
 	}
 }
 
-func NewCommand(goPath string, srcRoot string) (*Command) {
+func NewCommand(homeDir string, goPath string, srcRoot string) (*Command) {
 	command := Command{
-		homeDir: getHomeDir(),
+		homeDir: homeDir,
 		srcRoot: srcRoot,
 		goPath:  goPath,
 	}
@@ -58,23 +48,23 @@ func NewCommand(goPath string, srcRoot string) (*Command) {
 
 func (c *Command) Install() {
 	// Prepare directory for config file
-	configErr := os.MkdirAll(c.homeDir+"/.config/github-notifier", 0700)
+	configErr := os.MkdirAll(c.homeDir+settings.ConfigPath, 0700)
 
 	if configErr != nil {
 		panic(configErr)
 	}
 
-	// Prepare directory for octocat
-	octocatErr := os.MkdirAll(c.homeDir+"/.local/share/github-notifier", 0700)
+	// Prepare directory for static data
+	octocatErr := os.MkdirAll(c.homeDir+settings.DataPath, 0700)
 	if octocatErr != nil {
 		panic(configErr)
 	}
 
 	// Copy config file
-	copyFile(c.goPath+c.srcRoot+"/config.json.example", c.homeDir+"/.config/github-notifier/config.json")
+	copyFile(c.goPath+c.srcRoot+"/config.json.example", c.homeDir+settings.DataPath+"/"+settings.ConfigFileName)
 
 	// Copy octocat
-	copyFile(c.goPath+c.srcRoot+"/icons/octocat.png", c.homeDir+"/.local/share/github-notifier/octocat.png")
+	copyFile(c.goPath+c.srcRoot+"/icons/octocat.png", c.homeDir+settings.DataPath+"/"+settings.IconFileName)
 }
 
 func (c *Command) Start(pidFileName string) {
@@ -120,7 +110,7 @@ func (c *Command) Stop(pidFileName string) {
 	syscall.Kill(pid, 15)
 
 	// Remove PID file
-	removeErr := os.Remove(c.homeDir + "/.github-notifier.pid")
+	removeErr := os.Remove(c.homeDir + "/" + settings.PidFileName)
 	if removeErr != nil {
 		panic(removeErr)
 	}

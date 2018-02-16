@@ -8,6 +8,8 @@ import (
 	"log"
 	"github.com/gen2brain/beeep"
 	"path/filepath"
+	"github.com/PapiCZ/github-notifier/settings"
+	"fmt"
 )
 
 type GithubNotifier struct {
@@ -31,7 +33,7 @@ func NewGithubNotifier(apiToken string) (*GithubNotifier) {
 }
 
 func (g *GithubNotifier) ListenToNotifications(wakeUpInterval time.Duration) {
-	iconPath, err := filepath.Abs("./icons/octocat.png")
+	iconPath, err := filepath.Abs(settings.HomeDir+settings.DataPath+"/"+settings.IconFileName)
 
 	if err != nil {
 		log.Fatalln(err)

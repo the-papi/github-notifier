@@ -6,15 +6,24 @@ import (
 	"os"
 	"go/build"
 	"github.com/PapiCZ/github-notifier/helpers"
+	"github.com/PapiCZ/github-notifier/settings"
+	"os/user"
 )
 
-const (
-	srcRoot = "/src/github.com/PapiCZ/github-notifier/" // Relative to GOPATH
-	pidFileName = ".github-notifier.pid"
-	configPath  = "./config.json"
-)
+
+func setHomeDir() {
+	usr, err := user.Current()
+
+	if err != nil {
+		panic(err)
+	}
+
+	settings.HomeDir = usr.HomeDir
+}
 
 func main() {
+	setHomeDir()
+
 	// Get GOPATH
 	goPath := os.Getenv("GOPATH")
 	if goPath == "" {
@@ -22,26 +31,26 @@ func main() {
 	}
 
 	if len(os.Args) > 1 {
-		cmd := helpers.NewCommand(goPath, srcRoot)
+		cmd := helpers.NewCommand(settings.HomeDir, goPath, settings.SrcRoot)
 
 		switch os.Args[1] {
 		case "start":
-			cmd.Start(pidFileName)
+			cmd.Start(settings.PidFileName)
 			break
 		case "stop":
-			cmd.Stop(pidFileName)
+			cmd.Stop(settings.PidFileName)
 			break
 		case "install":
 			cmd.Install()
 			break
 		}
 	} else {
-		runApp()
+		runApp(settings.HomeDir, settings.ConfigFileName)
 	}
 }
 
-func runApp() {
-	config := helpers.NewConfig(configPath)
+func runApp(homeDir string, configFileName string) {
+	config := helpers.NewConfig(homeDir + settings.ConfigPath + "/" + configFileName)
 
 	github := helpers.NewGithubNotifier(config.Get("api_token"))
 
