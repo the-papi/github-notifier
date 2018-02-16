@@ -3,9 +3,9 @@ package main
 import (
 	"time"
 	"strconv"
-	"github-notifier/helpers"
 	"os"
 	"go/build"
+	"github.com/PapiCZ/github-notifier/helpers"
 )
 
 const (
