@@ -7,7 +7,6 @@ import (
 	"syscall"
 	"os/user"
 	"os/exec"
-	"go/build"
 	"log"
 	"io"
 )
