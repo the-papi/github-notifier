@@ -13,10 +13,15 @@ const (
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "start" {
-		helpers.Start(pidFileName)
-	} else if len(os.Args) > 1 && os.Args[1] == "stop" {
-		helpers.Stop(pidFileName)
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "start":
+			helpers.Start(pidFileName)
+			break
+		case "stop":
+			helpers.Stop(pidFileName)
+			break
+		}
 	} else {
 		runApp()
 	}
